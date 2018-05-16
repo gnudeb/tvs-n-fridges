@@ -12,6 +12,7 @@ class CategoriesView(View):
     def get(self, request):
         categories = Category.objects.all()
         return JsonResponse({
+            "success": True,
             "categories": [category.name for category in categories]
         })
 
@@ -31,6 +32,7 @@ class CategoryView(View):
         products = category.product_set.all()
 
         return JsonResponse({
+            "success": True,
             "products": [ProductSerializer(p).as_dict() for p in products],
         })
 
