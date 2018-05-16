@@ -35,6 +35,24 @@ class CategoryView(View):
         })
 
 
+class ProductView(View):
+    http_method_names = ['get']
+
+    def get(self, request, _id):
+        try:
+            product = Product.objects.get(id=_id)
+        except ObjectDoesNotExist:
+            return JsonResponse({
+                "success": False,
+                "message": "Product with id {} wasn't found".format(_id)
+            })
+
+        return JsonResponse({
+            "success": True,
+            "product": ProductSerializer(product).as_dict()
+        })
+
+
 class ClickProductView(View):
     http_method_names = ['post']
 
