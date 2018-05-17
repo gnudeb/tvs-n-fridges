@@ -1,9 +1,13 @@
 from django.http.response import JsonResponse
-from django.views import View
+from django.views.generic import View, TemplateView
 from django.core.exceptions import ObjectDoesNotExist
 
 from .models import Category, Product
 from .serializers import ProductSerializer
+
+
+class SPAView(TemplateView):
+    template_name = "spa.html"
 
 
 class CategoriesView(View):
