@@ -37,20 +37,21 @@ var app = new Vue({
     },
 
     setProduct(id) {
-      this.issueClick(id);
-      fetch("/api/product/" + id + "/")
-        .then(response => response.json())
-        .then(json => {
-          if (!json.success) {
-            console.log(json.message);
-            return;
-          }
-          this.product = json.product;
-        });
+      this.issueClick(id).then( () => {
+        fetch("/api/product/" + id + "/")
+          .then(response => response.json())
+          .then(json => {
+            if (!json.success) {
+              console.log(json.message);
+              return;
+            }
+            this.product = json.product;
+          })
+      });
     },
 
     issueClick(id) {
-      POST("/api/click_product/", {id: id})
+      return POST("/api/click_product/", {id: id})
         .then(response => response.json())
         .then(json => {
           if (!json.success) {
