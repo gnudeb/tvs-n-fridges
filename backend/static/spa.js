@@ -39,13 +39,19 @@ var app = new Vue({
             console.log(json.message);
             return;
           }
-          this.product = json.product;
           this.issueClick(id);
+          this.product = json.product;
         });
     },
 
     issueClick(id) {
-      console.log("Click " + id);
+      POST("/api/click_product/", {id: id})
+        .then(response => response.json())
+        .then(json => {
+          if (!json.success) {
+            console.log(json.message);
+          }
+        });
     },
   },
 
@@ -57,7 +63,8 @@ var app = new Vue({
 
 function POST(url, data) {
   return fetch(url, {
-
+    body: JSON.stringify(data),
+    method: "POST",
   })
 }
 

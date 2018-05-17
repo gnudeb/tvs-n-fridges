@@ -1,9 +1,38 @@
+import json
+
 from django.http.response import JsonResponse
 from django.views.generic import View, TemplateView
 from django.core.exceptions import ObjectDoesNotExist
 
 from .models import Category, Product
 from .serializers import ProductSerializer
+
+
+class JsonPostView(View):
+    """Abstract view that handles POST request with JSON payload."""
+    http_method_names = ['post']
+    required_fields = []
+
+    def post(self, request):
+        try:
+            json_payload = json.loads(request.body.decode('utf-8'))
+        except json.JSONDecodeError as e:
+            return JsonResponse({
+                "success": False,
+                "message": str(e)
+            })
+
+        for field in self.required_fields:
+            if field not in json_payload:
+                return JsonResponse({
+                    "success": False,
+                    "message": "Expected field '{}'.".format(field)
+                })
+
+        return self.handle(request, json_payload)
+
+    def handle(self, request, json_payload):
+        raise NotImplementedError()
 
 
 class SPAView(TemplateView):
@@ -59,24 +88,16 @@ class ProductView(View):
         })
 
 
-class ClickProductView(View):
-    http_method_names = ['post']
+class ClickProductView(JsonPostView):
+    required_fields = ['id']
 
-    def post(self, request):
+    def handle(self, request, json_payload):
         try:
-            product_id = request.POST['id']
-        except KeyError:
-            return JsonResponse({
-                "success": False,
-                "message": "Field 'id' is required."
-            })
-
-        try:
-            product = Product.objects.get(id=product_id)
+            product = Product.objects.get(id=json_payload['id'])
         except ObjectDoesNotExist:
             return JsonResponse({
                 "success": False,
-                "message": "Product with id {} wasn't found".format(product_id)
+                "message": "Product with id {} wasn't found".format(json_payload['id'])
             })
 
         product.clicks += 1
