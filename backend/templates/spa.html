@@ -22,7 +22,9 @@
             <h3 v-if="products.length != 0">Products</h3>
             <ul>
                 <li v-for="product in products">
-                    <button v-on:click="setProduct(product.id)">[[ product.name ]]</button>
+                    <button v-on:click="setProduct(product.id)">
+                        [[ product.name ]]: [[ product.clicks ]] clicks
+                    </button>
                 </li>
             </ul>
         </div>

@@ -7,6 +7,7 @@ var app = new Vue({
     categories: [],
     products: [],
     product: null,
+    category: null,
   },
 
   methods: {
@@ -18,8 +19,8 @@ var app = new Vue({
         });
     },
 
-    setCategory(category) {
-      fetch("/api/category/" + category + "/")
+    updateProducts() {
+      fetch("/api/category/" + this.category + "/")
         .then(response => response.json())
         .then(json => {
           if (!json.success) {
@@ -27,11 +28,16 @@ var app = new Vue({
             return;
           }
           this.products = json.products;
-          this.product = null;
         });
     },
 
+    setCategory(category) {
+      this.category = category;
+      this.updateProducts();
+    },
+
     setProduct(id) {
+      this.issueClick(id);
       fetch("/api/product/" + id + "/")
         .then(response => response.json())
         .then(json => {
@@ -39,7 +45,6 @@ var app = new Vue({
             console.log(json.message);
             return;
           }
-          this.issueClick(id);
           this.product = json.product;
         });
     },
@@ -51,6 +56,7 @@ var app = new Vue({
           if (!json.success) {
             console.log(json.message);
           }
+          this.updateProducts();
         });
     },
   },
