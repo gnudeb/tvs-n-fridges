@@ -62,7 +62,7 @@ class CategoryView(View):
                 "message": "Category '{}' does not exist".format(category_name),
             })
 
-        products = category.product_set.all()
+        products = category.product_set.order_by('clicks').all()
 
         return JsonResponse({
             "success": True,
