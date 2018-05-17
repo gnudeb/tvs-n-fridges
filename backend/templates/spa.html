@@ -8,6 +8,30 @@
     <script src="{% static 'spa.js' %}" defer></script>
 </head>
 <body>
-    <div id="app">[[ msg ]]</div>
+    <div id="app">
+        <div id="categories-list">
+            <ul>
+                <li v-for="category in categories">
+                    <button v-on:click="setCategory(category)">[[ category ]]</button>
+                </li>
+            </ul>
+        </div>
+
+        <div id="products-list">
+            <ul>
+                <li v-for="product in products">
+                    <button v-on:click="setProduct(product.id)">[[ product.name ]]</button>
+                </li>
+            </ul>
+        </div>
+
+        <div id="product-view-container">
+            <div id="product-view" v-if="product">
+                <div id="product-name">[[ product.name ]]</div>
+                <div id="clicks">[[ product.clicks ]]</div>
+            </div>
+            <div id="no-product-view" v-else></div>
+        </div>
+    </div>
 </body>
 </html>
